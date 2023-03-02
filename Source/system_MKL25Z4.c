@@ -95,7 +95,7 @@ void SystemInit (void) {
   SIM->COPC = (uint32_t)0x00u;
 #endif /* (DISABLE_WDOG) */
 #if (CLOCK_SETUP == 0)
- // /* SIM->CLKDIV1: OUTDIV1=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,OUTDIV4=2,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0 */
+  /* SIM->CLKDIV1: OUTDIV1=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,OUTDIV4=2,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0 */
   SIM->CLKDIV1 = (uint32_t)0x00020000UL; /* Update system prescalers */
   /* Switch to FEI Mode */
   /* MCG->C1: CLKS=0,FRDIV=0,IREFS=1,IRCLKEN=1,IREFSTEN=0 */
@@ -118,33 +118,31 @@ void SystemInit (void) {
   /* SIM->SCGC5: PORTA=1 */
   SIM->SCGC5 |= (uint32_t)0x0200UL;     /* Enable clock gate for ports to enable pin routing */
   /* SIM->CLKDIV1: OUTDIV1=1,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,OUTDIV4=1,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0 */
-  SIM->CLKDIV1 = (uint32_t)0x10010000UL; /* Update system prescalers */ 
-  /* PORTA->PCR18: ISF=0,MUX=0 */ 
-  PORTA->PCR[18] &= (uint32_t)~0x01000700UL; // interrupt bit and mux are 0. Mux may make all other settings not be written as theyre read only if not supported. IRQ = 1111, high drive strength, passive filter, slow slewrate, pull up resistor enabled
+  SIM->CLKDIV1 = (uint32_t)0x10010000UL; /* Update system prescalers */
+  /* PORTA->PCR18: ISF=0,MUX=0 */
+  PORTA->PCR[18] &= (uint32_t)~0x01000700UL;
   /* PORTA->PCR19: ISF=0,MUX=0 */
-  PORTA->PCR[19] &= (uint32_t)~0x01000700UL;  // pin above was clock input EXTAL which this pin XTAL can reference as a IO signal.  
+  PORTA->PCR[19] &= (uint32_t)~0x01000700UL;
   /* Switch to FBE Mode */
-  /* OSC0->CR: ERCLKEN=1,??=0,EREFSTEN=0,??=0,SC2P=1,SC4P=0,SC8P=0,SC16P=1 */ // 
-	//OSC0 is a oscillator module, this ones fed from EXTAL i believe	
-  OSC0->CR = (uint8_t)0x89U; // External clock reference clock enabled, 18pf cap  load added
+  /* OSC0->CR: ERCLKEN=1,??=0,EREFSTEN=0,??=0,SC2P=1,SC4P=0,SC8P=0,SC16P=1 */
+  OSC0->CR = (uint8_t)0x89U;
   /* MCG->C2: LOCRE0=0,??=0,RANGE0=2,HGO0=0,EREFS0=1,LP=0,IRCS=0 */
-	//MCG is Multipupose close generator, generates system clock i believe.
-  MCG->C2 = (uint8_t)0x24U; // interrupt req generated on loss of OSC0, very high freq selected, low power, external clock referenced, not in low power, slow internal oscillator used
+  MCG->C2 = (uint8_t)0x24U;
   /* MCG->C1: CLKS=2,FRDIV=3,IREFS=0,IRCLKEN=1,IREFSTEN=0 */
-  MCG->C1 = (uint8_t)0x9AU;// External clock is referenced,  FLL divider, since RANGE0 set in previous C2 reg as (0x01) or VHF, divider is by 256, otherwise would be 8 if not set. Enables this as internal reference clock
+  MCG->C1 = (uint8_t)0x9AU;
   /* MCG->C4: DMX32=0,DRST_DRS=0 */
-  MCG->C4 &= (uint8_t)~(uint8_t)0xE0U; //Narrows DC0 Freq range to32.78khz from the high reference range. Not sure what that means yet
+  MCG->C4 &= (uint8_t)~(uint8_t)0xE0U;
   /* MCG->C5: ??=0,PLLCLKEN0=0,PLLSTEN0=0,PRDIV0=1 */
-  MCG->C5 = (uint8_t)0x01U; // PLL divides by 1
+  MCG->C5 = (uint8_t)0x01U;
   /* MCG->C6: LOLIE0=0,PLLS=0,CME0=0,VDIV0=0 */
-  MCG->C6 = (uint8_t)0x00U;// determines how much VC0 output of PLL is divided by, but also sets how multiplication factor set to ref clock freq. This setting is multiply by 24
+  MCG->C6 = (uint8_t)0x00U;
   while((MCG->S & MCG_S_IREFST_MASK) != 0x00U) { /* Check that the source of the FLL reference clock is the external reference clock. */
-  } 
-  while((MCG->S & 0x0CU) != 0x08U) {    /* Wait until external reference clock is selected as MCG output */ 
-  }  // checks clock set mask that its set to external reference
+  }
+  while((MCG->S & 0x0CU) != 0x08U) {    /* Wait until external reference clock is selected as MCG output */
+  }
   /* Switch to PBE Mode */
   /* MCG->C6: LOLIE0=0,PLLS=1,CME0=0,VDIV0=0 */
-  MCG->C6 = (uint8_t)0x40U; // pull is set to reference MCG source but has to be scaled to 2-4MHZ before this is set
+  MCG->C6 = (uint8_t)0x40U;
   while((MCG->S & 0x0CU) != 0x08U) {    /* Wait until external reference clock is selected as MCG output */
   }
   while((MCG->S & MCG_S_LOCK0_MASK) == 0x00U) { /* Wait until locked */

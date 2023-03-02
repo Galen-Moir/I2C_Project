@@ -6,3 +6,4 @@ void Delay (uint32_t dly) {
 	for (t=dly*10000; t>0; t--)
 		;
 }
+// *******************************ARM University Program Copyright © ARM Ltd 2013*************************************   

@@ -36,3 +36,4 @@ void Control_RGB_LEDs(unsigned int red_on, unsigned int green_on, unsigned int b
 			PTD->PSOR = MASK(BLUE_LED_POS); 
 	}
 }	
+// *******************************ARM University Program Copyright © ARM Ltd 2013*************************************   

@@ -11,3 +11,4 @@ void Init_RGB_LEDs(void);
 void Control_RGB_LEDs(unsigned int red_on, unsigned int green_on, unsigned int blue_on);
 
 #endif
+// *******************************ARM University Program Copyright © ARM Ltd 2013*************************************   

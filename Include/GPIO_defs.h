@@ -12,3 +12,4 @@
 #define SPKR_POS (0) 	// on port C
 
 #endif
+// *******************************ARM University Program Copyright © ARM Ltd 2013*************************************   

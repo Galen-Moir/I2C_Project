@@ -1,6 +1,7 @@
 #include <MKL25Z4.H>
 #include "i2c.h"
 
+#define InterruptEnable = 1;
 //init i2c1
 void i2c_init(void)
 {
@@ -10,8 +11,10 @@ void i2c_init(void)
 	
 	
 	//set pins to I2C function
-	PORTC->PCR[10] |= PORT_PCR_MUX(0x2);
-	PORTC->PCR[11] |= PORT_PCR_MUX(0x2);
+	PORTC->PCR[10] &= ~(PORT_PCR_MUX_MASK | PORT_PCR_PE_MASK);
+	PORTC->PCR[10] |= PORT_PCR_MUX(2);
+	PORTC->PCR[11] &= ~(PORT_PCR_MUX_MASK | PORT_PCR_PE_MASK);
+	PORTC->PCR[11] |= PORT_PCR_MUX(2);
 		
 
 	
@@ -21,7 +24,6 @@ void i2c_init(void)
  	I2C1->F = (I2C_F_ICR(0x1F) | I2C_F_MULT(0));
 	
 	//enable i2c and set to master mode
-	I2C1->C1 = 0x00;
 	I2C1->C1 |= (I2C_C1_IICEN_MASK | I2C_C1_IICIE_MASK);
 }
 
@@ -157,4 +159,6 @@ void i2c_write_byte(uint8_t addr, uint8_t data)
 	I2C_M_STOP;
 	
 }
+
+
 
