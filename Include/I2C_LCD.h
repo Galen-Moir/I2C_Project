@@ -6,6 +6,18 @@
 #define LCD_ADDR_W (0x4E)
 #define LCD_ADDR_R (0x4F)
 
+#define QMC5883L_DEVICE_ADDRESS   (0x0D)
+#define QMC5883L_READ_ADDR        (0x1B)
+#define QMC5883L_WRITE_ADDR       (0x1A)
+#define IMU_ADDR_W (0xD0)
+#define IMU_ADDR_R (0xD1)
+#define LCD_ADDR   (0x27)
+#define LCD_ADDR_W (0x4E)
+#define LCD_ADDR_R (0x4F)
+
+
+#define LcdTimeDelay (0.05)
+
 typedef unsigned          char uint8_t;
 #define MASK(x) (1UL << (x))
 

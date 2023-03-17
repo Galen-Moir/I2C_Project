@@ -41,6 +41,11 @@ extern unsigned char GPS_num_sats;
 /** Count var requesting GPS sentence processing, set by UART 0 RX ISR */
 extern volatile int GPS_sentence_avail;
 
+/** Variables that represent the three outgoing pins*/
+extern volatile int left;
+extern volatile int right;
+extern volatile int atDestination;
+
 /** Number of clock ticks scheduler has had */
 extern volatile unsigned long tick_ctr;
 

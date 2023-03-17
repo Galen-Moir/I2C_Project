@@ -200,7 +200,8 @@ uint8_t Process_NMEA_RMC(char * buffer) {
   long time=0l, date=0l;
   float lat=0.0, lon=0.0, ground_spd=0.0, course_made_good=0.0, mag_var=0.0;
   char lat_d=' ', lon_d=' ', valid=' ', mag_var_d=' ';
-  
+  int first_lat = 0, first_lon=0;
+	
   Scan_Long(&buffer, &time);
   Scan_Char(&buffer, &valid);
   Scan_Float(&buffer, &lat);
@@ -221,10 +222,13 @@ uint8_t Process_NMEA_RMC(char * buffer) {
   if ((valid == 'A') || (valid == 'a')) {
     if ((lat_d=='S') || (lat_d=='s'))
       lat = -lat;
-    if ((lon_d=='E') || (lon_d=='e'))
+    if ((lon_d=='W') || (lon_d=='w'))
       lon = -lon;
-    cur_lat = lat;
-    cur_lon = lon;
+		
+		first_lat = lat/100;
+    cur_lat = first_lat +((lat-(first_lat*100))/60);
+		first_lon = lon/100;
+    cur_lon = first_lon +((lon-(first_lon*100))/60);
     cur_date = date;
     cur_ground_spd = ground_spd;
     cur_course_made_good = course_made_good;
@@ -241,9 +245,10 @@ uint8_t Process_NMEA_GGA(char * buffer) {
   long time=0l, date=0l, temp=0l;
   float lat=0.0, lon=0.0;
   char lat_d=' ', lon_d=' ';
-  
+  int first_lat = 0, first_lon=0;
+	
   Scan_Long(&buffer, &time);
-  //  Scan_Char(&buffer, &valid);
+//  Scan_Char(&buffer, &valid);
   Scan_Float(&buffer, &lat);
   Scan_Char(&buffer, &lat_d);
   Scan_Float(&buffer, &lon);
@@ -264,10 +269,12 @@ uint8_t Process_NMEA_GGA(char * buffer) {
   if ((GPS_fix_quality == Q_GPS) || (GPS_fix_quality == Q_DGPS)) {
     if ((lat_d=='S') || (lat_d=='s'))
       lat = -lat;
-    if ((lon_d=='E') || (lon_d=='e'))
+    if ((lon_d=='W') || (lon_d=='w'))
       lon = -lon;
-    cur_lat = lat;
-    cur_lon = lon;
+    first_lat = lat/100;
+    cur_lat = first_lat +((lat-(first_lat*100))/60);
+		first_lon = lon/100;
+    cur_lon = first_lon +((lon-(first_lon*100))/60);
     //    cur_date = date;
     return TRUE;
   }
@@ -278,7 +285,8 @@ uint8_t Process_NMEA_GLL(char * buffer) {
   long time=0l;
   float lat=0.0, lon=0.0;
   char lat_d=' ', lon_d=' ', valid=' ';
-  
+  int first_lat = 0, first_lon=0;
+	
   Scan_Float(&buffer, &lat);
   Scan_Char(&buffer, &lat_d);
   Scan_Float(&buffer, &lon);
@@ -292,10 +300,12 @@ uint8_t Process_NMEA_GLL(char * buffer) {
   if ((valid == 'A') || (valid == 'a')) {
     if ((lat_d=='S') || (lat_d=='s'))
       lat = -lat;
-    if ((lon_d=='E') || (lon_d=='e'))
+    if ((lon_d=='W') || (lon_d=='w'))
       lon = -lon;
-    cur_lat = lat;
-    cur_lon = lon;
+    first_lat = lat/100;
+    cur_lat = first_lat +((lat-(first_lat*100))/60);
+		first_lon = lon/100;
+    cur_lon = first_lon +((lon-(first_lon*100))/60);
     return TRUE;
   }
   return FALSE;

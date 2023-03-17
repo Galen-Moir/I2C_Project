@@ -35,9 +35,10 @@
 uint8_t READ_IMU(uint8_t address);
 void Init_IMU(void);
 void WRITE_IMU(uint8_t address,uint8_t data);
-int16_t readSensor(uint8_t regH, uint8_t regL);
-void readSensors(void);
-void CalibrateSensors(void);
+int16_t readIMUSensor(uint8_t regH, uint8_t regL);
+void readIMUSensors(int16_t* Accel,int16_t* Gyro);
+void calibrateIMU(int16_t* Aoffset,int16_t* Goffset);
+//void RollPitchYaw(void);
+void PrintIMUSensors(void);
 
 #endif
-

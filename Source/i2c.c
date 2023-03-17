@@ -16,8 +16,6 @@ void i2c_init(void)
 	PORTC->PCR[11] &= ~(PORT_PCR_MUX_MASK | PORT_PCR_PE_MASK);
 	PORTC->PCR[11] |= PORT_PCR_MUX(2);
 		
-
-	
 	//set to 100k baud
 	//baud = bus freq/(scl_div*mul)
  	//100k = 24M/(1*240); icr=0x1F sets scl_div to 240
@@ -25,6 +23,7 @@ void i2c_init(void)
 	
 	//enable i2c and set to master mode
 	I2C1->C1 |= (I2C_C1_IICEN_MASK | I2C_C1_IICIE_MASK);
+	Delay(10); // Delay to wait out any devices holding bus high, incase reset durng read operation
 }
 
 
@@ -69,8 +68,7 @@ uint8_t i2c_repeated_read(uint8_t isLastRead)
 	if(isLastRead)	{
 		I2C_M_STOP;					/*send stop	*/
 	}
-	data = I2C1->D;				/*read data	*/
-
+		data = I2C1->D;				/*read data	*/
 	return  data;					
 }
 

@@ -17,6 +17,11 @@ float cur_water_spd = 0.0, cur_bearing = 0.0, cur_voltage = 0.1;
 
 volatile int GPS_sentence_avail=0;
 
+// Three pin outputs
+volatile int left = 0;
+volatile int right = 0;
+volatile int atDestination = 0;
+
 /* global mode variables */
 uint8_t record_active = FALSE;
 

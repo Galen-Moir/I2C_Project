@@ -22,6 +22,12 @@
 		0	1	Read busy flag and address counter 
 		1	0	Write data
 		1	1	Read data
+		
+		Apprently start and hold time of IO expander is 5uS
+		The lcd module itself needs 47us to process data, 
+		Therefore im gonna delay 50us after each i2c commadn to LCD
+		50us/1ms = 0.05 to pass to delay
+		
 
 		
 */ 
@@ -47,17 +53,16 @@ void LCD_Write_4bit_CMD(uint8_t addr, uint8_t c)
 	// For instructions RS & RW =0, Backlight is high
 	uint8_t EHi = 0x0C;
 	uint8_t ELo = 0x08;
-	
+	Delay(LcdTimeDelay);
 	I2C_TRAN;
 	I2C_M_START;
 	I2C1->D = addr;
 	I2C_WAIT;
 	I2C1->D = ((c<<4) | ELo);
-	I2C_WAIT;
+	I2C_WAIT; // carry flag high and status and mask in i2c wait isnt going through for some reason
 	I2C1->D = ((c<<4) | EHi);
 	I2C_WAIT;
 	I2C_M_STOP;
-	Delay(5);
 	
 }
 
@@ -65,6 +70,7 @@ void LCD_Write_8bit_CMD(uint8_t addr,uint8_t c)
 {
 	uint8_t EHi = 0x0C;
 	uint8_t ELo = 0x08;
+	Delay(LcdTimeDelay);
 	I2C_TRAN;
 	I2C_M_START;
 	I2C1->D = addr;
@@ -78,12 +84,12 @@ void LCD_Write_8bit_CMD(uint8_t addr,uint8_t c)
 	I2C1->D = (((c<<4) & 0xF0) | EHi);
 	I2C_WAIT;
 	I2C_M_STOP;
-	Delay(5);
 }
 void LCD_Write_8bit(uint8_t addr, uint8_t c)
 {
 	uint8_t EHi = 0x0D;
 	uint8_t ELo = 0x09;
+	Delay(LcdTimeDelay);
 	I2C_TRAN;
 	I2C_M_START;
 	I2C1->D = addr;
@@ -97,7 +103,6 @@ void LCD_Write_8bit(uint8_t addr, uint8_t c)
 	I2C1->D = (((c<<4) & 0xF0) | EHi);
 	I2C_WAIT;
 	I2C_M_STOP;
-	Delay(5);
 }
 
 void lcd_putchar(uint8_t addr, char c)
